@@ -2,10 +2,12 @@ import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 
-import { Navbar, CalendarEvent, CalendarModal } from "../";
+import { Navbar, CalendarEvent, CalendarModal, FabAddNew, FabDelete} from "../";
 import { localizer, getMessagesEs } from '../../helpers';
 import { useState } from 'react';
 import { useUiStore, useCalendarStore } from '../../hooks';
+
+
 
 
 
@@ -99,6 +101,12 @@ export const CalendarPage = () => {
             {/* colocamos el componente creado en calendar/components/CalendarModal 
             para que pueda salir la ventana emergente(popup)*/}
             <CalendarModal />
+
+            {/* agregamos el boton flotante que creamos en el archivo calendar/components/FabAddNew */}
+            <FabAddNew />
+
+             {/* agregamos el boton flotante que creamos en el archivo calendar/components/FabDelete */}
+             <FabDelete />
         </>
     )
 }

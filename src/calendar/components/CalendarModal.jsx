@@ -49,7 +49,7 @@ export const CalendarModal = () => {
     const { isDateModalOpen, closeDateModal } = useUiStore();
 
     //exportamos el hook  useClendarStore creado por nosotros en hooks para los eventos de calendario
-    const { activeEvent } = useCalendarStore();
+    const { activeEvent, startSavingEvent } = useCalendarStore();
 
     //usamos el Hook de React useState para el formulario
     const [formValues, setFormValues] = useState({
@@ -125,7 +125,7 @@ export const CalendarModal = () => {
     }
 
     //metodo para el posteo del formulario del modal(ventana emergente)
-    const onSubmit = (event) => {
+    const onSubmit = async(event) => {
 
         event.preventDefault(); //para evitar la propagacion del formulario
 
@@ -147,6 +147,16 @@ export const CalendarModal = () => {
         if (formValues.title.length <= 0) return;
 
         console.log(formValues);
+
+        //llamamos al metodo del Hook creado por nosotros useCalendarStore
+        //para que grabe la nueva nota creada, le pasamos el fomrValues del useState creado
+        //arriba para manejar el formulario
+        await startSavingEvent( formValues);
+
+        //cerramos el modal
+        closeDateModal();
+
+        setFormSubmited(false); //cambiamos el estado a false del useState creado arriba porque hemos finalizado el submited
 
 
     }

@@ -1,5 +1,5 @@
 
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore} from "@reduxjs/toolkit";
 import { calendarSlice, uiSlice } from "./";
 
 
@@ -12,5 +12,10 @@ export const store = configureStore({
     reducer: {
         calendar: calendarSlice.reducer,
         ui: uiSlice.reducer
-    }
+    },
+    //ponemos estas lineas de codigo para que no nos de errores cuando maneja
+    //las fechas y trata de serializarlas
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false
+    })
 })
