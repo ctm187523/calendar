@@ -4,7 +4,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import { Navbar, CalendarEvent, CalendarModal, FabAddNew, FabDelete} from "../";
 import { localizer, getMessagesEs } from '../../helpers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUiStore, useCalendarStore } from '../../hooks';
 
 
@@ -19,7 +19,7 @@ export const CalendarPage = () => {
 
     //importamos el Hook creado por nosotros en la carpeta Hooks useCalendarStore.js
     //para poder manejar los eventos del calendario
-    const { events, setActiveEvent  } = useCalendarStore();
+    const { events, setActiveEvent, startLoadingEvents  } = useCalendarStore();
 
 
     //usamos el Hook useState de React para poder almacenar la vista(mes,dia,etc) donde la habiamos dejado y restablecerla
@@ -68,6 +68,15 @@ export const CalendarPage = () => {
         localStorage.setItem('lastView', event); //cambiamos el valor del lastVie del useState creado arriba por el del event recibido al cambiar la vista
         setlastView(event); //usamos el setlastView del useState creado arriba y le pasamos el event, auqnue no haria falta
     }
+
+    //usamos el Hook de React useEffect para que al cargar la pantalla llame a metodo
+    //startLoadingEvents del hook useCalendarStore creado por nosotros y cargue todos los eventos del backend
+    //no le ponemos dependencias solo queremos cargarlo una vez
+    useEffect(() => {
+        
+        startLoadingEvents()
+       
+    }, []);
 
 
     return (

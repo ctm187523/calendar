@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
-import { onAddNewEvent, onDeleteEvent, onSetActiveEvent, onUpdateEvent } from "../store";
+import calendarApi from "../api/calendarApi";
+import { convertEventsToDateEvents } from "../helpers";
+import { onAddNewEvent, onDeleteEvent, onSetActiveEvent, onUpdateEvent, onLoadEvents } from "../store";
 
 
 
@@ -10,6 +12,9 @@ export const useCalendarStore = () => {
     //usamos useSelector para poder acceder a las propiedades del initialState del calendarSlice a traves del store
     const { events, activeEvent } = useSelector(state => state.calendar);
 
+    //obtenemos el usuario activo que esta autenticado en el store mediante el metodo de React useSelector
+    const { user } = useSelector( state => state.auth );
+
     //metodo que llama al metodo onSetActiveEvent del calendarSlice
     const setActiveEvent = (calendarEvent) => {
         dispatch(onSetActiveEvent(calendarEvent));
@@ -18,16 +23,20 @@ export const useCalendarStore = () => {
     //metodo para salvar una nota
     const startSavingEvent = async (calendarEvent) => {
 
-        // TODO: llegar al backend el nuevo evento
-
         //Si sale todo bien y el calendarEvent tiene el id significa que estoy
         //actualizando en caso contrario estoy creando una nueva nota
-        if (calendarEvent._id) {
+        if (calendarEvent.id) {
             //actualizando, llamamos al metodo del calendarSlice
             dispatch(onUpdateEvent({ ...calendarEvent }));
         } else {
-            //creando una nueva nota, llamamos al metodo del calendarSlice
-            dispatch(onAddNewEvent({ ...calendarEvent, _id: new Date().getTime() })) //creamos y añadimos un _id al calendarEvent
+
+            //hacemos la peticion a la base de datos para agregar un nuevo evento usando el archivo CalendarApi creado por nosotroa
+            const { data} = await calendarApi.post('/events', calendarEvent);
+            
+            //creando una nueva nota, llamamos al metodo del calendarSlice para agregar la nueva nota en el store
+            //creamos y añadimos el id para el store sacado de la respuesta del servidor, al crear un nuevo evento el servidor crea un id y nosotros lo recogemos y se lo añadimos para el store
+            //añadimos tambien el user que es el usuario activo autenticado lo sacamos de la linea 15
+            dispatch( onAddNewEvent({ ...calendarEvent, id: data.evento.id, user }) );
         }
 
     }
@@ -37,6 +46,25 @@ export const useCalendarStore = () => {
 
         //TODO: LLegar al backend para que sea eliminado
         dispatch(onDeleteEvent());
+    }
+
+    //metodo para cargar los eventos que tenemos en el backend
+    //lo usaremos en el archivo CalendarPage para que se carguen los eventos al iniciarse
+    const startLoadingEvents = async() => {
+
+        try {
+
+            //usamos el archivo creado por nosotros calendarApi y usamos un get para recibir los eventos
+            const { data } = await calendarApi.get('/events');
+            //usamos el archivo en helpers/onvertEventsToDateEvents para transformar las fechas de start y end a String
+            const events = convertEventsToDateEvents(data.eventos);
+            //llamamos a la funcion onLoadEvents del calendarSlice para insertar en el store los eventos almacenados en el backend
+            dispatch ( onLoadEvents( events ));
+            
+        } catch (error) {
+            console.log('Error cargando eventos');
+            console.log(error);
+        }
     }
 
     return {
@@ -51,5 +79,6 @@ export const useCalendarStore = () => {
         setActiveEvent,
         startDeletingEvent,
         startSavingEvent,
+        startLoadingEvents
     }
 }

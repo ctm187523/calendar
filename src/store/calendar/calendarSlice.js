@@ -1,25 +1,26 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { addHours, startOfYesterday } from 'date-fns';
+//import { addHours, startOfYesterday } from 'date-fns';
 
-const tempEvent = {
-    _id: new Date().getTime(),
-    title: 'Cumpleaños de Pepe',
-    notes: 'Hay que comprar un pastel',
-    start: new Date(),
-    end: addHours(new Date(), 2),
-    bgColor: '#fafafa',
-    user: {
-        _id: '123',
-        name: 'Manue'
-    }
-};
+// const tempEvent = {
+//     _id: new Date().getTime(),
+//     title: 'Cumpleaños de Pepe',
+//     notes: 'Hay que comprar un pastel',
+//     start: new Date(),
+//     end: addHours(new Date(), 2),
+//     bgColor: '#fafafa',
+//     user: {
+//         _id: '123',
+//         name: 'Manue'
+//     }
+// };
 
 export const calendarSlice = createSlice({
     name: 'calendar',
     initialState: {
+        isLoadingEvents: true,
         events: [
-            tempEvent
+            //tempEvent
         ],
         activeEvent: null
     },
@@ -59,10 +60,32 @@ export const calendarSlice = createSlice({
                 state.activeEvent = null; //borramos la nota activa
             }
 
+        },
+        //reducer para cargar los eventos ubicados en el localStorage, lo usamos en el useCalendarStore en la funcion startLoadingEvents
+        onLoadEvents: ( state, { payload = [] }) => {
+            state.isLoadingEvents = false;
+
+            //con la instruccion de abajo ya valdria pero lo haremos mas abajo diferente
+            //por si en un futuro queremos llamar mas de una vez a esta funcion por ejemplo 
+            //hacer paginaciones al agregar eventos nuevos
+            //state.events = payload; 
+
+            //barremos el payload y confirmamos si ya tenemos el evento insertado a traves del id
+            //si no lo tenemos lo insertamos
+            payload.forEach( event  => {
+
+                //usamos la instruccion some que nos devuelve un valor booleano si encuentra un id igual en el state.events
+                const exists = state.events.some( dbEvent => dbEvent === event.id );
+
+                    //si no existe añadimos el evento al array del state events
+                    if( !exists) {
+                        state.events.push( event );
+                    }
+            });
         }
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent } = calendarSlice.actions;
+export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadEvents } = calendarSlice.actions;

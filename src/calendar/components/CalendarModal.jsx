@@ -45,10 +45,10 @@ Modal.setAppElement('#root');
 
 export const CalendarModal = () => {
 
-    //exportamos el hook  useUiStore creado por nosotros en hooks para manejar el estado de lal modal(ventana emergente)
+    //exportamos el hook  useUiStore creado por nosotros en hooks para manejar el estado del modal(ventana emergente)
     const { isDateModalOpen, closeDateModal } = useUiStore();
 
-    //exportamos el hook  useClendarStore creado por nosotros en hooks para los eventos de calendario
+    //exportamos el hook  useCalendarStore creado por nosotros en hooks para los eventos de calendario
     const { activeEvent, startSavingEvent } = useCalendarStore();
 
     //usamos el Hook de React useState para el formulario
