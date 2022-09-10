@@ -33,7 +33,7 @@ export const LoginPage = () => {
 
     const loginSubmit = (event) => {
         event.preventDefault();
-        startLogin({ email: loginEmail, password: loginPassword })
+        startLogin({ email: loginEmail, password: loginPassword });
     }
 
     const registerSubmit = (event) => {

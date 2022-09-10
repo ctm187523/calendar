@@ -29,6 +29,9 @@ export const useAuthStore = () => {
             //usamos el metodo del storage y como payload le pasamos el name y el uid obtenido del data
             dispatch(onLogin({ name: data.name, uid: data.uid }));
 
+            //instruccion buscada en internet para refrescar la pagina al hacer logout y entrar de nuevo con otro usuario
+            // window.location.reload(false);
+
         } catch (error) {
             dispatch(onLogout('Credenciales incorrectas'));
             //limpiamos el mensaje de error pasados 0,10 segundos

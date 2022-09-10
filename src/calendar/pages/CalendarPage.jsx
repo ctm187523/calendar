@@ -13,6 +13,7 @@ import { useUiStore, useCalendarStore } from '../../hooks';
 
 export const CalendarPage = () => {
 
+    
     //importamos el Hook creado por nosotros en la carpeta Hooks useUiStore.js
     //para poder manejar el estado del Moda(ventana emergente)
     const { openDateModal } = useUiStore();

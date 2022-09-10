@@ -42,7 +42,7 @@ export const calendarSlice = createSlice({
 
                 //si coincide el id con el pasado por parametro retornamos
                 //el payload completo donde esta toda la informacion actualizada
-                if (event._id === payload._id) {
+                if (event.id === payload.id) {
                     return payload;
                 }
 
@@ -56,7 +56,7 @@ export const calendarSlice = createSlice({
             //si el activeEvent no es null
             if (state.activeEvent) {
                 //usamos el metodo de javaScript filter para retornar todos los eventos  que no coinciden el id del evento con el id del evento activo
-                state.events = state.events.filter(event => event._id !== state.activeEvent._id);
+                state.events = state.events.filter(event => event.id !== state.activeEvent.id);
                 state.activeEvent = null; //borramos la nota activa
             }
 
