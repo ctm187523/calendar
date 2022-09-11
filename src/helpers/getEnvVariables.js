@@ -2,9 +2,10 @@
 
 export const getEnVariables = () => {
 
-    import.meta.env; //importamos el paquete para las varaibles de entorno
+    //import.meta.env; //importamos el paquete para las varaibles de entorno
 
     return{
-        ...import.meta.env //retornamos y esparcimos las variables
+        VITE_API_URL: import.meta.env.VITE_API_URL,
+        //...import.meta.env //retornamos y esparcimos las variables
     } 
 }
