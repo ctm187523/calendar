@@ -5,7 +5,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Navbar, CalendarEvent, CalendarModal, FabAddNew, FabDelete} from "../";
 import { localizer, getMessagesEs } from '../../helpers';
 import { useEffect, useState } from 'react';
-import { useUiStore, useCalendarStore } from '../../hooks';
+import { useUiStore, useCalendarStore, useAuthStore } from '../../hooks';
 
 
 
@@ -13,7 +13,10 @@ import { useUiStore, useCalendarStore } from '../../hooks';
 
 export const CalendarPage = () => {
 
-    
+    //obtnemos del Hook creados por nosotros el user del store
+    const { user } = useAuthStore();
+
+
     //importamos el Hook creado por nosotros en la carpeta Hooks useUiStore.js
     //para poder manejar el estado del Moda(ventana emergente)
     const { openDateModal } = useUiStore();
@@ -27,12 +30,18 @@ export const CalendarPage = () => {
     const [lastView, setlastView] = useState(localStorage.getItem('lastView') || 'week'); //si el lasView es null lo restablecemos en la vista week
 
     //funcion para cambiar los estilos cuando suceda algo en el calendario
-    const eventPropGetter = (event, start, end, isSelected) => {
+    const eventStyleGetter = (event, start, end, isSelected) => {
 
         //console.log({ event, start, end, isSelected})
 
+        //creamos una constante donde comprobamos si el usuario logeado es el mismo que el usuario que creo
+        //el evento seleccionado ponemos la segunda condiciomn por si event.user._id es event.user.uid al hacer alguna actualizacion antes
+        const isMyEvent = ( user.uid === event.user._id) || ( user.uid === event.user.uid);
+        
+
         const style = {
-            backgroundColor: '#347CF7',
+            //usamos la condicion isMyEvent arriba creada para que si el evento es mio tenga un color azul y si no lo es sea de color gris
+            backgroundColor: isMyEvent ? '#347CF7' : '#465660',
             borderRadius: '0px',
             opacity: 0.8,
             color: 'white'
@@ -97,7 +106,7 @@ export const CalendarPage = () => {
                 //para el alto hacemos el calculo del 100 por cien menos 80px del navbar
                 style={{ height: 'calc( 100vh - 80px )' }}
                 messages={getMessagesEs()} //importamos de helpers/getMessagesEs el metodo del archivo para poner completamente todo en español
-                eventPropGetter={eventPropGetter} //llama a la funcion creada arriba
+                eventPropGetter={eventStyleGetter} //llama a la funcion creada arriba
                 //en el atriubuto components importamos el componente CalendarEvent creado en calendar/components/CalendarEvents para
                 //personalizar el cuadro del evento
                 components={{

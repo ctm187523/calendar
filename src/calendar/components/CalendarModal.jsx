@@ -146,7 +146,7 @@ export const CalendarModal = () => {
         //verificamos tambien que tenga el titulo 
         if (formValues.title.length <= 0) return;
 
-        console.log(formValues);
+        //console.log(formValues);
 
         //llamamos al metodo del Hook creado por nosotros useCalendarStore
         //para que grabe la nueva nota creada, le pasamos el fomrValues del useState creado

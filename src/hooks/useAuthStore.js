@@ -1,7 +1,7 @@
 import { tr } from "date-fns/locale";
 import { useDispatch, useSelector } from "react-redux"
 import calendarApi from "../api/calendarApi";
-import { clearErrorMessage, onChecking, onLogin, onLogout } from "../store";
+import { clearErrorMessage, onChecking, onLogin, onLogout, onLogoutCalendar } from "../store";
 
 //mandamos la informacion recibida al backend no usamos thunks lo hacemos de otra manera
 export const useAuthStore = () => {
@@ -101,6 +101,7 @@ export const useAuthStore = () => {
     //metodo que se ejecuta la hacer Logout usadp en el archivo components/NavBar
     const startLogout = () => {
         localStorage.clear(); //borramos el localstorage donde teniamos el Token
+        dispatch( onLogoutCalendar() ); // llamamos al onLogoutCalendar del authSlice para resetear los valores
         dispatch(onLogout()); //llamamos al logout del authSlice
     }
 

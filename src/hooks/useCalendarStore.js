@@ -31,14 +31,14 @@ export const useCalendarStore = () => {
             //actualizando en caso contrario estoy creando una nueva nota
             if (calendarEvent.id) {
 
-                //actualizamos en el backend usando el archivo calendarApi y utilizamos PUT, ponemos la direccion u mandamos el calendarEvent actualizado
+                //actualizamos en el backend usando el archivo calendarApi y utilizamos PUT, ponemos la direccion y mandamos el calendarEvent actualizado
                 await calendarApi.put(`/events/${calendarEvent.id}`, calendarEvent);
 
                 //actualizamos enb el store, llamamos al metodo del calendarSlice
                 dispatch(onUpdateEvent({ ...calendarEvent, user })); //añadimos tambien el user que es el usuario activo autenticado lo sacamos de la linea 15
                 return;
             }
-            //en caso de que no se a una actualizacion se ejecuta el siguiente codigo ya que n entra en el if y no ejecuta el return
+            //en caso de que no sea una actualizacion se ejecuta el siguiente codigo ya que no entra en el if y no ejecuta el return
 
             //hacemos la peticion a la base de datos para agregar un nuevo evento usando el archivo CalendarApi creado por nosotroa
             const { data } = await calendarApi.post('/events', calendarEvent);
@@ -61,10 +61,24 @@ export const useCalendarStore = () => {
     }
 
     //metodo que llama al metodo onDeleteEvent del calendarSlice para borrar una nota
-    const startDeletingEvent = () => {
+    const startDeletingEvent = async () => {
 
-        //TODO: LLegar al backend para que sea eliminado
-        dispatch(onDeleteEvent());
+        //accedemos al backend para eliminar el evento seleccionado
+        try {
+
+            //usamos el archivo calendarApi odnde utilizamos delete y le pasamos la direccion donde incluimos el evento activo a eliminar
+            await calendarApi.delete(`/events/${activeEvent.id}`);
+
+            //llamamos a la funcion del store onDeleteEvent para eliminar el evento
+            dispatch(onDeleteEvent());
+            
+        } catch (error) {
+            
+            console.log(error);
+            Swal.fire('Error al eliminar', error.response.data.msg, 'error');
+        }
+
+        
     }
 
     //metodo para cargar los eventos que tenemos en el backend

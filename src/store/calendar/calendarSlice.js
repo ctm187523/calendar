@@ -62,7 +62,7 @@ export const calendarSlice = createSlice({
 
         },
         //reducer para cargar los eventos ubicados en el localStorage, lo usamos en el useCalendarStore en la funcion startLoadingEvents
-        onLoadEvents: ( state, { payload = [] }) => {
+        onLoadEvents: (state, { payload = [] }) => {
             state.isLoadingEvents = false;
 
             //con la instruccion de abajo ya valdria pero lo haremos mas abajo diferente
@@ -72,20 +72,35 @@ export const calendarSlice = createSlice({
 
             //barremos el payload y confirmamos si ya tenemos el evento insertado a traves del id
             //si no lo tenemos lo insertamos
-            payload.forEach( event  => {
+            payload.forEach(event => {
 
                 //usamos la instruccion some que nos devuelve un valor booleano si encuentra un id igual en el state.events
-                const exists = state.events.some( dbEvent => dbEvent === event.id );
+                const exists = state.events.some(dbEvent => dbEvent === event.id);
 
-                    //si no existe añadimos el evento al array del state events
-                    if( !exists) {
-                        state.events.push( event );
-                    }
+                //si no existe añadimos el evento al array del state events
+                if (!exists) {
+                    state.events.push(event);
+                }
             });
+        },
+        //metodo que utilizamos al hacer logout para que todo vuelva a su estado inicial
+        onLogoutCalendar: ( state ) => {
+
+            state.isLoadingEvents =  true;
+            state.events = [ ];
+            state.activeEvent = null;
+
         }
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadEvents } = calendarSlice.actions;
+export const {
+    onAddNewEvent,
+    onDeleteEvent,
+    onLoadEvents,
+    onLogoutCalendar,
+    onSetActiveEvent,
+    onUpdateEvent,
+} = calendarSlice.actions;
